@@ -1,0 +1,34 @@
+.paginatedtable_main {
+  width: 500px;
+  margin: 32px auto;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.paginatedtable_main table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.paginatedtable_main thead {
+  text-align: center;
+  font-weight: bold;
+}
+
+.paginatedtable_main thead td {
+  border-bottom: 1px solid black;
+}
+
+.paginatedtable_main tr td {
+  padding: 16px;
+}
+
+.paginatedtable_main tbody td {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.paginatedtable_main tfoot td {
+  border-top: 1px solid black;
+}
