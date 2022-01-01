@@ -4,113 +4,128 @@ import {
   KeyboardArrowRightOutlined,
   LastPageOutlined,
 } from "@mui/icons-material";
-import { IconButton, MenuItem, Select } from "@mui/material";
+import { CircularProgress, IconButton, MenuItem, Select } from "@mui/material";
 import { parseInt } from "lodash";
-import React, { useState } from "react";
+import React from "react";
+import { connect } from "react-redux";
+import { setPageNo, setPageSize } from "../../redux/actions";
 import "./PaginatedTable.css";
 
-function PaginatedTable({ rows }) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
+function PaginatedTable({
+  rows,
+  totalPages,
+  pageSize,
+  pageNo,
+  setPageSize,
+  isFirst,
+  isLast,
+  setPageNo,
+  loading,
+}) {
   const handleFirstPageButtonClick = () => {
-    setPage(0);
+    setPageNo(0);
   };
 
   const handleNextButtonClick = () => {
-    setPage(page + 1);
+    setPageNo(pageNo + 1);
   };
 
   const handleBackButtonClick = () => {
-    setPage(page - 1);
+    setPageNo(pageNo - 1);
   };
 
   const handleLastPageButtonClick = () => {
-    setPage(Math.max(0, Math.ceil(rows.length / rowsPerPage) - 1));
+    setPageNo(totalPages - 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const isFirstPage = () => {
-    return page === 0;
-  };
-
-  const isLastPage = () => {
-    return page >= Math.ceil(rows.length / rowsPerPage) - 1;
+    setPageSize(parseInt(event.target.value, 10));
   };
 
   return (
     <div className="paginatedtable_main">
-      <table>
-        <thead>
-          <tr>
-            <td>Roll No</td>
-            <td>Name</td>
-            <td>Email</td>
-          </tr>
-        </thead>
-        <tbody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row) => (
-            <tr key={row.roll}>
-              <td>{row.roll}</td>
-              <td>{row.name}</td>
-              <td>{row.email}</td>
+      {!loading ? (
+        <table>
+          <thead>
+            <tr>
+              <td>Pincode</td>
+              <td>City</td>
+              <td>State</td>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={2}>
-              Rows per page :
-              <Select
-                value={rowsPerPage}
-                onChange={handleChangeRowsPerPage}
-                sx={{ m: 1, height: 30 }}
-              >
-                <MenuItem value="5">5</MenuItem>
-                <MenuItem value="10">10</MenuItem>
-                <MenuItem value="20">20</MenuItem>
-                <MenuItem value="-1">All</MenuItem>
-              </Select>
-            </td>
-            <td colSpan={2}>
-              <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={isFirstPage()}
-              >
-                <FirstPageOutlined />
-              </IconButton>
-              <IconButton
-                onClick={handleBackButtonClick}
-                disabled={isFirstPage()}
-              >
-                <KeyboardArrowLeftOutlined />
-              </IconButton>
-              <span>{page + 1}</span>
-              <IconButton
-                onClick={handleNextButtonClick}
-                disabled={isLastPage()}
-              >
-                <KeyboardArrowRightOutlined />
-              </IconButton>
-              <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={isLastPage()}
-              >
-                <LastPageOutlined />
-              </IconButton>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.districtName}</td>
+                <td>{row.stateName}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={2}>
+                Rows per page :
+                <Select
+                  value={pageSize}
+                  onChange={handleChangeRowsPerPage}
+                  sx={{ m: 1, height: 30 }}
+                >
+                  <MenuItem value="5">5</MenuItem>
+                  <MenuItem value="10">10</MenuItem>
+                  <MenuItem value="20">20</MenuItem>
+                  <MenuItem value="-1">All</MenuItem>
+                </Select>
+              </td>
+              <td colSpan={2}>
+                <IconButton
+                  onClick={handleFirstPageButtonClick}
+                  disabled={isFirst}
+                >
+                  <FirstPageOutlined />
+                </IconButton>
+                <IconButton onClick={handleBackButtonClick} disabled={isFirst}>
+                  <KeyboardArrowLeftOutlined />
+                </IconButton>
+                <span>
+                  Page {pageNo + 1} of {totalPages}
+                </span>
+                <IconButton onClick={handleNextButtonClick} disabled={isLast}>
+                  <KeyboardArrowRightOutlined />
+                </IconButton>
+                <IconButton
+                  onClick={handleLastPageButtonClick}
+                  disabled={isLast}
+                >
+                  <LastPageOutlined />
+                </IconButton>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      ) : (
+        <CircularProgress color="inherit" />
+      )}
     </div>
   );
 }
 
-export default PaginatedTable;
+const mapStateToProps = (state) => {
+  return {
+    totalPages: state.totalPages,
+    pageSize: state.pageSize,
+    pageNo: state.pageNo,
+    isFirst: state.isFirst,
+    isLast: state.isLast,
+    loading: state.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setPageSize: (size) => dispatch(setPageSize(size)),
+    setPageNo: (pageNo) => dispatch(setPageNo(pageNo)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaginatedTable);
