@@ -44,23 +44,7 @@ export const setPageNo = (pageNo) => {
           .then((response) => {
             console.log(response.data);
 
-            const cities = response.data.data.content;
-            const totalPages = response.data.data.totalPages;
-            const pageSize = response.data.data.size;
-            const pageNo = response.data.data.number;
-            const isFirst = response.data.data.first;
-            const isLast = response.data.data.last;
-
-            dispatch(
-              fetchSuccessfull({
-                cities,
-                totalPages,
-                pageSize,
-                pageNo,
-                isFirst,
-                isLast,
-              })
-            );
+            dispatch(fetchSuccessfull(extractData(response.data.data)));
           });
       });
   };
@@ -87,23 +71,7 @@ export const setPageSize = (size) => {
           .then((response) => {
             console.log(response.data);
 
-            const cities = response.data.data.content;
-            const totalPages = response.data.data.totalPages;
-            const pageSize = response.data.data.size;
-            const pageNo = response.data.data.number;
-            const isFirst = response.data.data.first;
-            const isLast = response.data.data.last;
-
-            dispatch(
-              fetchSuccessfull({
-                cities,
-                totalPages,
-                pageSize,
-                pageNo,
-                isFirst,
-                isLast,
-              })
-            );
+            dispatch(fetchSuccessfull(extractData(response.data.data)));
           });
       });
   };
@@ -132,24 +100,26 @@ export const fetchCities = () => {
           .then((response) => {
             console.log(response.data);
 
-            const cities = response.data.data.content;
-            const totalPages = response.data.data.totalPages;
-            const pageSize = response.data.data.size;
-            const pageNo = response.data.data.number;
-            const isFirst = response.data.data.first;
-            const isLast = response.data.data.last;
-
-            dispatch(
-              fetchSuccessfull({
-                cities,
-                totalPages,
-                pageSize,
-                pageNo,
-                isFirst,
-                isLast,
-              })
-            );
+            dispatch(fetchSuccessfull(extractData(response.data.data)));
           });
       });
+  };
+};
+
+const extractData = (data) => {
+  const cities = data.content;
+  const totalPages = data.totalPages;
+  const pageSize = data.size;
+  const pageNo = data.number;
+  const isFirst = data.first;
+  const isLast = data.last;
+
+  return {
+    cities,
+    totalPages,
+    pageSize,
+    pageNo,
+    isFirst,
+    isLast,
   };
 };
