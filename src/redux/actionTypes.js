@@ -1,3 +1,4 @@
 export const FETCH_DATA = "FETCH_DATA";
 export const FETCH_SUCCESSFULL = "FETCH_SUCCESSFULL";
 export const FETCH_FAILED = "FETCH_FAILED";
+export const ADD_AUTH_TOKEN = "ADD_AUTH_TOKEN";

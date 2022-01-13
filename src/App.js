@@ -1,37 +1,29 @@
-import { Snackbar } from "@mui/material";
-import { useEffect } from "react";
 import { connect } from "react-redux";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import PaginatedTable from "./components/Table/PaginatedTable";
-import { fetchCities } from "./redux/actions";
+import Home from "./components/Home/Home";
+import Login from "./components/Login/Login";
 
-function App({ fetchCities, cities, error }) {
-  // Fetch Data
-  useEffect(() => {
-    fetchCities();
-  }, []);
-  // Fetch Data
-
+function App({ authToken }) {
   return (
     <div className="App">
-      <PaginatedTable rows={cities} />
-
-      <Snackbar open={error != ""} autoHideDuration={6000} message={error} />
+      {authToken ? (
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+          </Routes>
+        </Router>
+      ) : (
+        <Login />
+      )}
     </div>
   );
 }
 
 const mapStateToProps = (state) => {
   return {
-    cities: state.cities,
-    error: state.error,
+    authToken: state.authToken,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchCities: () => dispatch(fetchCities()),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, null)(App);
